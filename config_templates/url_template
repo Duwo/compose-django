@@ -1,0 +1,16 @@
+
+from django.conf.urls import patterns, include, url
+from django.conf.urls.static import static
+from django.conf import settings
+
+urlpatterns = [
+  url(r'^admin/', include(admin.site.urls)),
+  url(r'^accounts/', include('induwo_registration.urls')),
+  url(r'^accounts/', include('registration.backends.hmac.urls')),
+  url('^', include('django.contrib.auth.urls')),
+  url(r'^polls/', include('polls.urls', namespace="polls")),
+  url(r'^accounts/', include('registration.backends.hmac.urls')),
+  url(r'^', include('induwo.urls')),
+  url(r'^jettysporken/', include('jetty.urls', namespace='jetty')),
+  url(r'^jettysporken/photologue/', include('photologue.urls', namespace='photologue')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
