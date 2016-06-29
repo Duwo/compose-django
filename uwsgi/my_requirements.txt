@@ -1,4 +1,3 @@
-induwo-registration
-django-jetty
-django-inudwo
-django-polls
+induwo-jetty
+induwo-polls
+induwo-portfolio

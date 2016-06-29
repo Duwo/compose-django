@@ -1,8 +1,8 @@
 ADMIN = [('Erik','erikrodhe@gmail.com')]
-DEBUG = False
-TEMPLATE_DEBUG = False
+DEBUG = True
+TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['www.erikrodhe.se','www.erikrodhe.com','erikrodhe.se','erikrodhe.com']
+ALLOWED_HOSTS = ['www.erikrodhe.se','www.erikrodhe.com','erikrodhe.se','erikrodhe.com', '127.0.0.1', '192.168.99.100' , 'localhost']
 
 # Application definition
 
@@ -18,13 +18,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'polls',
     'jetty',
-    'induwo_registration',
-    'induwo',
+    'portfolio',
     'django.contrib.sites',
     'djangobower',
     'pytz',
     'sortedm2m',
     'photologue',
+    'registration',
 ]
 
 
