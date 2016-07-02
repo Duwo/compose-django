@@ -1,22 +1,17 @@
 # Make an application
-create_app:
-	django-admin startproject mysite
-
-config: # create_app
-	sed -i '' -e '/DEBUG*/,$$d' mysite/mysite/settings.py ;\
-	cat config_templates/apps_template >> mysite/mysite/settings.py ;\
-	cat config_templates/static_template >> mysite/mysite/settings.py ;\
-	cat config_templates/url_template >> mysite/mysite/urls.py ;\
-	mv mysite uwsgi/mysite
-
-collect_mine:
-	cp ../portfolio/dist/* uwsgi/my_requirements/ ;\
-	cp ../polls/dist/*.tar.gz uwsgi/my_requirements/ ;\
-	cp ../jetty/dist/*.tar.gz  uwsgi/my_requirements/ ;\
-
-collect_py:
-	pip --download uwsgi/requirements.txt
-	cp -r Downloads/requirements uwsgi/requirements
-
+include db.mk
 migrate:
-	docker-compose run uwsgi app/manage.py migrate
+	docker-compose run uwsgi_auth /app/manage.py migrate 
+	docker-compose run uwsgi_jetty /app/manage.py migrate 
+	docker-compose run uwsgi_portfolio /app/manage.py migrate 
+
+static:
+	docker-compose run uwsgi /app/manage.py collectstatic --noinput
+	
+initdb:
+	docker-compose run \
+	-e POSTGRES_USER=$(POSTGRES_USER) \
+	-e POSTGRES_PASSWORD=$(POSTGRES_PASSWORD) \
+	-e PGDATA=/var/lib/postgresql/data/$(PGDATA) \
+	-e POSTGRES_DB=$(POSTGRES_DB) \
+	-u postgres postgres initdb

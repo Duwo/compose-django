@@ -1,3 +1,0 @@
-induwo-jetty
-induwo-polls
-induwo-portfolio
