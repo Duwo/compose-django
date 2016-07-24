@@ -1,0 +1,95 @@
+version: '2'
+services:
+  nginx:
+    image: erikrodhe/nginx 
+    links:
+      - accounts
+      - jetty
+      - portfolio
+      - polls
+    ports:
+      - "0.0.0.0:80:80"
+    volumes_from:
+      - accounts
+      - jetty
+      - polls
+      - portfolio
+
+
+  accounts:
+    image: erikrodhe/accounts
+    links:
+      - accounts_db
+    command: ./uwsgi.sh
+    volumes:
+      - ${XDG_DATA_DIR}/accounts/static:/accounts_static
+      - ${XDG_DATA_DIR}/accounts/media:/accounts_media
+    env_file:
+      - ${XDG_CONFIG_HOME}/accounts/${DOCKER_ENV}.yml
+
+
+  jetty:
+    image: erikrodhe/jetty
+    links:
+      - accounts_db
+      - jetty_db
+    command: ./uwsgi.sh
+    volumes:      
+      - ${XDG_DATA_DIR}/jetty/static:/accounts_static
+      - ${XDG_DATA_DIR}/jetty/media:/accounts_media
+    env_file:
+      - ${XDG_CONFIG_HOME}/jetty/${DOCKER_ENV}.yml
+
+
+  portfolio:
+    image: erikrodhe/portfolio
+    links:
+      - accounts_db
+      - portfolio_db
+    command: /uwsgi.sh
+    volumes:
+      - ${XDG_DATA_DIR}/portfolio/media:/accounts_media
+    env_file:
+      - ${XDG_CONFIG_HOME}/portfolio/${DOCKER_ENV}.yml
+
+  polls:
+    image: erikrodhe/polls
+    links:
+      - accounts_db
+      - polls_db
+    command: /uwsgi.sh
+    volumes:
+      - ${XDG_DATA_DIR}/polls/static:/static
+      - ${XDG_DATA_DIR}/polls/media:/media
+    env_file:
+      - ${XDG_CONFIG_HOME}/polls/${DOCKER_ENV}.yml
+
+  accounts_db:
+    image: postgres:9.5
+    volumes:
+      - ${XDG_DATA_DIR}/accounts/db:/var/lib/postgresql/data/pgdata
+    env_file:
+      - ${XDG_CONFIG_HOME}/accounts/${DOCKER_ENV}.yml
+
+
+  jetty_db:
+    image: postgres:9.5
+    volumes:
+      - ${XDG_DATA_DIR}/jetty/db:/var/lib/postgresql/data/pgdata
+    env_file:
+      - ${XDG_CONFIG_HOME}/jetty/${DOCKER_ENV}.yml
+
+
+  portfolio_db:
+    image: postgres:9.5
+    volumes:
+      - ${XDG_DATA_DIR}/portfolio/db:/var/lib/postgresql/data/pgdata
+    env_file:
+      - ${XDG_CONFIG_HOME}/portfolio/${DOCKER_ENV}.yml
+
+  polls_db:
+    image: postgres:9.5
+    volumes:
+      - ${XDG_DATA_DIR}/polls/db:/var/lib/postgresql/data/pgdata
+    env_file:
+      - ${XDG_CONFIG_HOME}/polls/${DOCKER_ENV}.yml
